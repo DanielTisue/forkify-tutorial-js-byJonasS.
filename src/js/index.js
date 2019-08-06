@@ -2,6 +2,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
 import { elements, renderLoader, clearLoader } from './views/base';
 
 //=====Global State of the App=====
@@ -17,7 +18,7 @@ const state = {};
 const controlSearch = async () => {
   // 1) get the query from the view
   const query = searchView.getInput(); //TODO 
-  console.log(query);
+  //console.log(query);
 
   if(query) {
     // 2) New search object and add it to state
@@ -27,14 +28,18 @@ const controlSearch = async () => {
     searchView.clearInput();
     searchView.clearResults();
     renderLoader(elements.searchRes);
+    try {
+      // 4) Search for recipes.
+      await state.search.getResults(); // returns a promise because itself is an async function which returns a promise.
 
-    // 4) Search for recipes.
-    await state.search.getResults(); // returns a promise because itself is an async function which returns a promise.
-
-    // 5) render results on UI
-    //console.log(state.search.result);
-    clearLoader();
-    searchView.renderResults(state.search.result);
+      // 5) render results on UI
+      //console.log(state.search.result);
+      clearLoader();
+      searchView.renderResults(state.search.result);
+    } catch (err) {
+      alert('Something\'s wrong with the Search...');
+      clearLoader();
+    } 
   }
 }
 
@@ -53,22 +58,36 @@ search.getResults();
 const controlRecipe = async () => {
   // Get ID from the url
   const id = window.location.hash.replace('#', '');
-  console.log(id);
+  //console.log(id);
 
   if (id) {
     //prepare the UI for changes
+    recipeView.clearRecipe();
+    renderLoader(elements.recipe);
+
+    //highlight selected search item
+    if(state.search) searchView.highlightSelected(id);
 
     //create a new recipe obj
     state.recipe = new Recipe(id);
-    //get recipe data
-    await state.recipe.getRecipe();
-    //Calculate servings and time
-    state.recipe.calcTime();
-    state.recipe.calcServings();
-    // Render Recipe
-    console.log(state.recipe);
+    try {
+      //get recipe data and parse ingredients
+      await state.recipe.getRecipe();
+      console.log(state.recipe.ingredients);
+      state.recipe.parseIngredients(); 
+      //Calculate servings and time
+      state.recipe.calcTime();
+      state.recipe.calcServings();
+      // Render Recipe
+      clearLoader();
+      recipeView.renderRecipe(state.recipe);
+      //console.log(state.recipe);
+    } catch (err) {
+      alert('Something was wrong with processing the Recipe..');
+      console.log(err);
+      
+    }
   }
-
 }
 
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));

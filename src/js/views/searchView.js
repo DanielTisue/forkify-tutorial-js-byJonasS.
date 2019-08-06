@@ -4,9 +4,17 @@ export const getInput = () => elements.searchInput.value;
 
 export const clearInput = () => { elements.searchInput.value = '';};
 
-export const clearResults = () => { elements.searchResultList.innerHTML = ''};
+export const clearResults = () => { elements.searchResultList.innerHTML = '';
+elements.searchResPages.innerHTML = '';
+};
 
-
+export const highlightSelected = id => {
+  const resultsArr = Array.from(document.querySelectorAll('.results__link'));
+  resultsArr.forEach(el => {
+    el.classList.remove('results__link--active');
+  });
+  document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+}
 // Pasta with tomato and spinach => .split => turns into an array with 5 elements
 //['Pasta', 'with', 'Tomato', 'and', 'Spinach']
 // Then use reduce in order to 'shorten array' which will shorten title.
@@ -35,10 +43,10 @@ const limitRecipeTitle = (title, limit = 17) => {
   return title;
 }
 
-const renderRecipe = recipe => {
+export const renderRecipe = recipe => {
   const markup = `
   <li>
-      <a class="results__link results__link--active" href="#${recipe.precipe_id}">
+      <a class="results__link results__link--active" href="#${recipe.recipe_id}">
           <figure class="results__fig">
               <img src="${recipe.image_url}" alt="Test">
           </figure>
