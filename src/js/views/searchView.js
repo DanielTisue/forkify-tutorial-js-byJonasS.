@@ -13,7 +13,7 @@ export const highlightSelected = id => {
   resultsArr.forEach(el => {
     el.classList.remove('results__link--active');
   });
-  document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+  document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');
 }
 // Pasta with tomato and spinach => .split => turns into an array with 5 elements
 //['Pasta', 'with', 'Tomato', 'and', 'Spinach']

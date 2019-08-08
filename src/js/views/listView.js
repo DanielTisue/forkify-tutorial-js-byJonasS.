@@ -21,6 +21,7 @@ export const renderItem = item => {
 export const deleteItem = id => {
     const item = document.querySelector(`[data-itemid="${id}"]`);
     if(item){
-      item.parentElement.removeChild(item); 
+      item.parentElement.removeChild(item).parentElement;
+        if (el) el.parentElement.removeChild(el); 
     } 
 };
