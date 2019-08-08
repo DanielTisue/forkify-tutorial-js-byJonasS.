@@ -2,6 +2,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import List from './models/List';
+import Likes from './models/Likes';
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 import * as listView from './views/listView';
@@ -120,7 +121,65 @@ const controlList = () => {
     });
 }
 
+/** 
+ * LIKE CONTROLLER
+ */
+const controlLike = () => {
+  if(!state.likes) state.likes = new Likes();
+  const currentID = state.recipe.id;
+
+  //User has not yet liked current recipe
+  if(!state.likes.isLiked(currentID)) {
+    //Add like to the state
+  const newLike = state.likes.addLike(
+    currentID,
+    state.recipe.title,
+    state.recipe.author,
+    state.recipe.img,
+
+  )
+    //Toggle like button
+
+    //Add Like to UI list
+    console.log(state.likes);
+  //User has liked the current recipe 
+  } else {
+    //Remove like to the state
+    state.likes.deleteLike(currentID);
+    //Toggle like button
+
+    //Remove Like from UI list
+    console.log(state.likes);
+
+  }
+}
+
+
+
 // Handle delete and update list item events
+elements.recipe.addEventListener('click', e => {
+  if (e.target.matches('.btn-decrease, .btn-decrease *')) {
+    //Decrease button is clicked
+    if (state.recipe.servings > 1) {
+      state.recipe.updateServings('dec');
+      recipeView.updateServingsIngredients(state.recipe);
+    }  
+  } else if (e.target.matches('.btn-increase, .btn-increase *')){
+       //Increase button is clicked
+      state.recipe.updateServings('inc');
+      recipeView.updateServingsIngredients(state.recipe);
+
+  } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')){
+    //Add ingredients to shopping list
+      controlList();
+    } else if (e.target.matches('.recipe__love, .recipe__love *')){
+      //Like Controller
+      controlLike();
+
+    }
+  
+});
+
 elements.shopping.addEventListener('click', e => {
     const id = e.target.closest('.shopping__item').dataset.itemid;
 
@@ -136,9 +195,7 @@ elements.shopping.addEventListener('click', e => {
     } else if (e.target.matches('.shopping__count-value')) {
         const val = parseFloat(e.target.value, 10);
         state.list.updateCount(id, val);
-    } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')){
-      controlList();
-    }
+    } 
 });
 
 
