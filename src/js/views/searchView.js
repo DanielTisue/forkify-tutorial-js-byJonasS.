@@ -29,7 +29,7 @@ fourth iteration: 15/ acc +  cur.length = 18 / newTitle = ['Pasta', 'with', 'Tom
 
 fifth iteration: 18/..../ which is less than 17 so loop is done and no more words are added to the array.
 */
-const limitRecipeTitle = (title, limit = 17) => {
+export const limitRecipeTitle = (title, limit = 17) => {
   const newTitle = [];
   if (title.length > limit) {
     title.split(' ').reduce((acc, cur) => {

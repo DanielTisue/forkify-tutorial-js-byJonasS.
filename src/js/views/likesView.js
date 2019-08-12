@@ -1,4 +1,5 @@
 import { elements } from './base';
+import { limitRecipeTitle } from './searchView';
 
 export const toggleLikeBtn = isLiked => {
   const iconString = isLiked ? 'icon-heart' : 'icon-heart-outlined';
@@ -18,7 +19,7 @@ export const renderLike = like => {
                 <img src="${like.img}" alt="${like.title}">
             </figure>
             <div class="likes__data">
-                <h4 class="likes__name">${like.title}</h4>
+                <h4 class="likes__name">${limitRecipeTitle(like.title)}</h4>
                 <p class="likes__author">T${like.author}</p>
             </div>
         </a>
@@ -28,6 +29,6 @@ export const renderLike = like => {
 }
 
 export const deleteLike = id => {
-  const el = document.querySelector(`.likes__link[href*="${id}]`);
+  const el = document.querySelector(`.likes__link[href*="${id}"]`).parentElement;
     if (el) el.parentElement.removeChild(el);
 }
